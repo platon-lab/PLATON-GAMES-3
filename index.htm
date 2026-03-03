@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLATON GAMES 3</title>
+
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <meta name="description" content="Ігри про песиків і котів.">
+    <meta name="keywords" content="Ігра,Гра,Тіто,Смартик,Джуніор,Філ,Мілка.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap');
+
+        /* Основні стилі */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            /* Оновлений фон: глибокий смарагдовий градієнт */
+            background: linear-gradient(135deg, #051937, #004d40, #00897b);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow: hidden;
+            padding: 20px;
+            user-select: none;
+        }
+
+        /* Декоративні елементи */
+        .background-circles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            animation: float 20s infinite linear;
+        }
+
+        .circle:nth-child(1) { width: 300px; height: 300px; left: -50px; top: -50px; }
+        .circle:nth-child(2) { width: 500px; height: 500px; right: -100px; bottom: -100px; }
+        .circle:nth-child(3) { width: 200px; height: 200px; left: 15%; bottom: 10%; background: rgba(0, 255, 127, 0.1); }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-size: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            /* Градієнт для тексту в тон гри */
+            background: linear-gradient(to right, #00ff88, #00aaff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0px 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Контейнер для гри */
+        .games-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            animation: fadeInUp 1s ease-out 0.5s backwards;
+        }
+
+        .game-card {
+            position: relative;
+            width: 350px;
+            height: 480px;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .game-card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 30px 70px rgba(0, 255, 136, 0.3);
+            border-color: rgba(0, 255, 136, 0.5);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 77, 64, 0.6);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .game-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-icon {
+            font-size: 5rem;
+            color: #00ff88;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+        }
+
+        .play-text {
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .game-card { width: 300px; height: 420px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-circles">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+
+    <header class="header">
+        <h1>PLATON GAMES 3</h1>
+    </header>
+
+    <main class="games-container">
+        
+        <div class="game-card">
+            <a href="https://platon-lab.github.io/Frogger-Road/" target="_blank" style="text-decoration: none; color: inherit;">
+                <img src="Frog.png" alt="Frogger Game">
+                <div class="play-overlay">
+                    <span class="play-icon">🐸</span>
+                    <span class="play-text">ГРАТИ</span>
+                </div>
+            </a>
+        </div>
+
+    </main>  
+
+</body>
+</html>
