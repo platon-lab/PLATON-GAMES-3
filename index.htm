@@ -26,12 +26,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Змінено з center, щоб зручно було гортати */
+            justify-content: flex-start;
             color: white;
             overflow-x: hidden;
-            overflow-y: auto; /* Дозволяємо гортати вниз */
+            overflow-y: auto;
             padding: 40px 20px;
             user-select: none;
+            transition: background 0.2s;
         }
 
         /* Декоративні елементи */
@@ -78,16 +79,16 @@
             text-shadow: 0px 10px 20px rgba(0,0,0,0.3);
         }
 
-        /* Контейнер для гри */
         .games-container {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
-            flex-wrap: wrap; /* ДОДАНО: дозволяє карткам переноситись на новий рядок */
-            gap: 30px;      /* ДОДАНО: відстань між картками */
+            flex-wrap: wrap;
+            gap: 30px;
             max-width: 1200px;
             animation: fadeInUp 1s ease-out 0.5s backwards;
+            position: relative;
         }
 
         .game-card {
@@ -102,13 +103,20 @@
             border: 4px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(15px);
             background: rgba(255, 255, 255, 0.05);
-            flex-shrink: 0; /* Щоб картки не стискалися */
+            flex-shrink: 0;
         }
 
         .game-card:hover {
             transform: scale(1.08);
             box-shadow: 0 30px 70px rgba(0, 255, 136, 0.3);
             border-color: rgba(0, 255, 136, 0.5);
+        }
+
+        /* Ефект розльоту */
+        .game-card.scattered {
+            pointer-events: none;
+            position: fixed;
+            z-index: 1000;
         }
 
         .game-card img {
@@ -150,6 +158,44 @@
             font-size: 1.5rem;
         }
 
+        /* Стилі для глюків та відео */
+        #glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+            background-size: 100% 3px;
+            z-index: 9999;
+            display: none;
+            pointer-events: none;
+            animation: glitch-anim 0.1s infinite;
+        }
+
+        @keyframes glitch-anim {
+            0% { transform: translate(0); filter: brightness(1); }
+            50% { transform: translate(-5px, 5px); filter: brightness(2) hue-rotate(90deg); }
+            100% { transform: translate(5px, -5px); filter: brightness(1); }
+        }
+
+        #end-video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: black;
+            z-index: 10000;
+            display: none;
+        }
+
+        #end-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -166,7 +212,7 @@
         }
     </style>
 </head>
-<body>
+<body id="main-body">
 
     <div class="background-circles">
         <div class="circle"></div>
@@ -174,12 +220,19 @@
         <div class="circle"></div>
     </div>
 
+    <div id="glitch-overlay"></div>
+
+    <div id="end-video-container">
+        <video id="end-video">
+            <source src="End.mp4" type="video/mp4">
+        </video>
+    </div>
+
     <header class="header">
         <h1>PLATON GAMES 3</h1>
     </header>
 
-    <main class="games-container">
-        
+    <main class="games-container" id="games-grid">
         <div class="game-card">
             <a href="https://platon-lab.github.io/Frogger-Road/" target="_blank" style="text-decoration: none; color: inherit;">
                 <img src="Frog.png" alt="Frogger Game">
@@ -269,8 +322,56 @@
                 </div>
             </a>
         </div>
-
     </main>  
 
+    <script>
+        let clickCount = 0;
+        const body = document.getElementById('main-body');
+        const cards = document.querySelectorAll('.game-card');
+        const glitch = document.getElementById('glitch-overlay');
+        const videoContainer = document.getElementById('end-video-container');
+        const video = document.getElementById('end-video');
+
+        body.addEventListener('click', (e) => {
+            // Рахуємо кліки тільки по порожньому фону (не по картках)
+            if (e.target.closest('.game-card') || e.target.closest('header')) return;
+
+            clickCount++;
+
+            if (clickCount === 20) {
+                triggerEasterEgg();
+            }
+        });
+
+        function triggerEasterEgg() {
+            // 1. Картки розлітаються
+            cards.forEach(card => {
+                const randomX = (Math.random() - 0.5) * 2000;
+                const randomY = (Math.random() - 0.5) * 2000;
+                const randomRotate = (Math.random() - 0.5) * 720;
+                
+                card.classList.add('scattered');
+                card.style.transition = "all 1.5s cubic-bezier(0.5, -0.5, 0.5, 1.5)";
+                card.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg) scale(0)`;
+                card.style.opacity = "0";
+            });
+
+            // 2. Глюки екрану
+            glitch.style.display = 'block';
+            body.style.background = 'black';
+
+            // 3. Через 3 секунди - відео
+            setTimeout(() => {
+                glitch.style.display = 'none';
+                videoContainer.style.display = 'block';
+                video.play();
+            }, 3000);
+        }
+
+        // 4. Після закінчення відео - перехід на сайт
+        video.onended = () => {
+            window.location.href = "https://platon-lab.github.io/PLATON-GAMES-4/";
+        };
+    </script>
 </body>
 </html>
